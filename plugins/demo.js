@@ -37,9 +37,17 @@ s.listen([
 //时间
 s.listen([
     `time`,
-], function (s) {
+], async function (s) {
+    s.reply(moment(new Date().getTime()).format("YYYY-MM-DD HH:mm:ss"))
+    await sleep(3000)
     s.reply(moment(new Date().getTime()).format("YYYY-MM-DD HH:mm:ss"))
 })
 
-
+/*
+休眠函数sleep
+调用 await sleep(1500)
+ */
+async function sleep(ms) {
+    return new Promise(resolve=>setTimeout(resolve, ms))
+}
 

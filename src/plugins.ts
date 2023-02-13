@@ -6,7 +6,7 @@ import { NodeVM, VMScript } from 'vm2'
 
 const vm = new NodeVM({
     require: {
-        external: true,
+        external: true, 
         root: './'
     }
 });
@@ -42,7 +42,7 @@ function addCommand(plugin: Plugin) {
         return
     }
 
-    addRules(plugin)
+    addRules(plugin) 
 }
 
 export function handleMessage(s: Sender) {
@@ -64,7 +64,7 @@ export function handleMessage(s: Sender) {
                 // console.log(arr)
                 s.matches = arr
                 value.handle(s)
-            }
+            } 
         })
     })
  

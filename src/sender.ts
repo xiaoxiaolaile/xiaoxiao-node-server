@@ -42,7 +42,7 @@ export default class Sender {
         return ""
     }
  
-    listen(commands : string[], f: ((s: Sender) => void)){
+    listen(commands : string[], f:  ((s: Sender) => void)){
         const plugin = new Plugin()
         plugin.rules = commands
         plugin.handle = sender =>{
