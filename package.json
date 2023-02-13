@@ -13,6 +13,7 @@
   "devDependencies": {
     "@types/koa": "^2.13.5",
     "@types/node": "^18.13.0",
+    "@types/node-telegram-bot-api": "^0.57.6",
     "@typescript-eslint/eslint-plugin": "^5.51.0",
     "@typescript-eslint/parser": "^5.51.0",
     "eslint": "^8.33.0",
@@ -25,7 +26,9 @@
   },
   "dependencies": {
     "koa": "^2.14.1",
+    "node-telegram-bot-api": "^0.61.0",
     "request": "^2.88.2",
-    "vm2": "^3.9.14"
+    "vm2": "^3.9.14",
+    "winston": "^3.8.2"
   }
 }
