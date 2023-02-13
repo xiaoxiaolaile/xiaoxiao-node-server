@@ -42,12 +42,12 @@ function addCommand(plugin: Plugin) {
 export function handleMessage(s: Sender) {
     // console.log(s)
     const message = s.getMsg() as string
-    Logger.info(`收到消息：${message}`)
+    Logger.info(`来自 ${s.form} 收到消息：${message}`)
     plugins.forEach(value => {
         value.rules.forEach(rule => {
             const r = customRule(rule)
-            console.log(rule)
-            console.log(r)
+            // console.log(rule)
+            // console.log(r)
             const regExp = new RegExp(r, "g")  
             // console.log(regExp.exec(message))
             const arr = regExp.exec(message)
