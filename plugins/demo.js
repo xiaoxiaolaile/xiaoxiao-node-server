@@ -51,3 +51,23 @@ async function sleep(ms) {
     return new Promise(resolve=>setTimeout(resolve, ms))
 }
 
+// 存储管理
+s.listen([
+    `[存储操作:get,delete] [桶] [键]`,
+    `[存储操作:set] [桶] [键] [值]`,
+    `[存储操作:list,empty,lenof] [桶]`,
+], function (s) {
+    // if (!s.isAdmin()) {
+    //     return
+    // }
+    // var bucket = new Bucket(s.param("桶"))
+    var key = s.param("键")
+    var bucket = s.param("桶")
+    var value = s.param("值")
+    var stact = s.param("存储操作")
+    console.log(stact)
+    console.log(bucket)
+    console.log(key)
+    console.log(value)
+    
+})

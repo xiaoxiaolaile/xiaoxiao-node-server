@@ -53,7 +53,7 @@ export function handleMessage(s: Sender) {
         value.rules.forEach(rule => {
             const r = customRule(rule)
             // console.log(rule)
-            // console.log(r)
+            // console.log(r)  
             const regExp = new RegExp(r, "g")  
             // console.log(regExp.exec(message))
             const arr = regExp.exec(message)
@@ -172,16 +172,17 @@ function customRule(rule: string) {
     const myArr: string[]  = []
     arr.forEach(s => {
         let str = ""
-        let reg = ""
+        // let reg = ""
         if (s.indexOf(":") > -1) {
             str = s.replace(/\[.*:/,"(")
             str = str.replace("]",")")
             str = str.replace(",","|")
             // str = `(${str})`
         }else {
-            reg = "[.*]" 
-            if (s.search(reg) > -1){
-                str = s.replaceAll(reg,"(.*)")
+            const regExp = new RegExp("\\[.*\\]", "g")  
+            // console.log("【内容】", s)
+            if (s.match(regExp) != null){
+                str = s.replaceAll(regExp,"(.*)")
             }else {
                 str = "(" + s + ")"
             }
