@@ -63,7 +63,7 @@ function debugging() {
                 }
                 break;
         }
-        r1.prompt();
+        r1.prompt(); 
     });
 
     // close事件监听

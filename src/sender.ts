@@ -1,4 +1,5 @@
 
+import Plugin,{newPlugin} from "./plugins"
 
 export default class Sender {
     form :string
@@ -39,6 +40,23 @@ export default class Sender {
             return `${this.matches[key + 1]}`
         }
         return ""
+    }
+ 
+    listen(commands : string[], f: ((s: Sender) => void)){
+        const plugin = new Plugin()
+        plugin.rules = commands
+        plugin.handle = sender =>{
+            f(sender)
+        }
+        newPlugin(plugin)
+    }
+
+    getUserId(){
+        return this.userId
+    }
+
+    reply(... args:any[]){
+        console.log(">  ",...args)
     }
 }
 

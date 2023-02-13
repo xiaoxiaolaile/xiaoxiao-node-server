@@ -28,8 +28,14 @@ export default class Plugin {
     script!: any
     disable: boolean = false
     handle!: (s: Sender) => void
+    on_start :boolean = false
 }
 
+// NewPlugin 新建一个插件
+export function newPlugin(plugin: Plugin) {
+    plugins.push(plugin)
+	addCommand(plugin)
+}
 
 function addCommand(plugin: Plugin) {
     if (plugin.disable) {
@@ -82,9 +88,18 @@ function initPlugins(files: string[]) {
             const plugin = createPlugin(pathName)
             plugins.push(plugin)
             addCommand(plugin) 
+
+            if (plugin.on_start){
+                //执行 服务 
+                // plugin.handle()
+                const sender = new Sender("WebServer")
+                sender.chatId = 0
+                sender.userId = 0
+                runMessage(sender, plugin.script)  
+            }
         }
     })
-}
+} 
 
 function createPlugin(pathName: string) {
     const str = fs.readFileSync(pathName, "utf8")
@@ -105,6 +120,7 @@ function createPlugin(pathName: string) {
     plugin.description = getString("description", data)
     plugin.version = getString("version", data)
     plugin.public = getBoolean("public", data)
+    plugin.on_start = getBoolean("on_start", data)
     plugin.script = script
     // console.log(plugin)
     return plugin
@@ -139,7 +155,7 @@ function addRules(plugin: Plugin) {
             plugin.rules[index] = rule
         })
     }
-    if (!plugin.handle) {
+    if (!plugin.handle) { 
         plugin.handle = (s: Sender) => {
             runMessage(s, plugin.script)
         }
