@@ -9,8 +9,18 @@ const vm = new NodeVM({
         external: true, 
         root: './'
     }
-});
+})
 
+const listenMap = new Map<string,any>()
+
+export function addListenMap(key: string, value: any ){
+    listenMap.set(key,value)
+}  
+  
+export function removeListenMap(key: string){
+    listenMap.delete(key)
+}
+ 
 export default class Plugin {
     // * @author 猫咪
     // * @name 小爱同学
@@ -49,6 +59,13 @@ export function handleMessage(s: Sender) {
     // console.log(s)
     const message = s.getMsg() as string
     Logger.info(`来自 ${s.form} 收到消息：${message}`)
+    //如果有监听的，优先处理
+    const key = `${s.userId}_${s.chatId}_${s.form}`
+    if (listenMap.has(key)){
+        listenMap.get(key)(message)
+        return
+    }
+ 
     plugins.forEach(value => {
         value.rules.forEach(rule => {
             const r = customRule(rule)
@@ -103,7 +120,9 @@ function initPlugins(files: string[]) {
 
 function createPlugin(pathName: string) {
     const str = fs.readFileSync(pathName, "utf8")
-    const script = new VMScript(str, { filename: pathName })
+    const script = new VMScript(`!(async () => {
+        ${str}
+        })().catch((e) => console.log(e))`, { filename: pathName })
     const reg = "/\\*(.|\\r\\n|\\n)*?\\*/"
     const res = str.match(reg); //没有使用g选项  
     const data = res?.[0]
@@ -142,6 +161,7 @@ function runMessage(sender: Sender, script: any) {
     vm.freeze(sender, 'sender');
     vm.freeze(Sender, 'Sender');
     vm.run(script)
+    
 }
 
 function addRules(plugin: Plugin) {

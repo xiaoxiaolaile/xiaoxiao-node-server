@@ -16,7 +16,7 @@ import Sender from "./sender"
 import tgBot from "../Adapter/Telegram"
 import readline from "readline"
 tgBot()
- 
+
 console.log('>>> 小小启动成功')
 console.log('> 正在初始化......')
 debugging()
@@ -62,8 +62,8 @@ function debugging() {
                 }
                 break;
         }
-        r1.prompt(); 
-    });
+        r1.prompt();  
+    });  
 
     // close事件监听
     r1.on("close", function () {
@@ -71,7 +71,7 @@ function debugging() {
         process.exit(0);
     })
 
-
+ 
 
 }
 

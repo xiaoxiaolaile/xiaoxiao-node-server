@@ -1,5 +1,16 @@
 
-import Plugin,{newPlugin} from "./plugins"
+import Plugin,{newPlugin, addListenMap, removeListenMap} from "./plugins"
+
+class NewSender {
+    message: any
+    constructor(message: any){
+        this.message = message
+    }
+
+    getContent() {
+        return this.message
+    }
+}
 
 export default class Sender {
     form :string
@@ -51,12 +62,46 @@ export default class Sender {
         newPlugin(plugin)
     }
 
+    async listenS(ms : number, pattern:string){
+        if (pattern == null || pattern == "") {
+            pattern = "(.*)"
+        }
+        let timeoutId : NodeJS.Timeout
+        const key = `${this.userId}_${this.chatId}_${this.form}`
+        const delay = new Promise(function(resolve){
+          timeoutId = setTimeout(function(){
+            removeListenMap(key)
+            resolve(null)
+          }, ms)
+        })
+        
+        // overall timeout
+        const result =  await Promise.race([delay, new Promise(function(resolve){
+            addListenMap(key,resolve)
+          })])
+          .then( (res) => {
+            removeListenMap(key)
+            clearTimeout(timeoutId)
+            return res;
+          })
+ 
+        if (result){
+            return new NewSender(result)
+        }else {
+            return null
+        }
+    }
+
     getUserId(){
         return this.userId
     }
 
-    reply(... args:any[]){
-        console.log(">  ",...args)
+    getChatId(){
+        return this.chatId
+    }
+
+    reply(... args:unknown[]){
+        console.log("> ",...args)
 
         
     }
