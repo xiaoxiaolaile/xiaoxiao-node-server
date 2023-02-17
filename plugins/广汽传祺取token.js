@@ -14,7 +14,6 @@
  * @disable false
  */
 
-const request = require('request')
 
 // sender
 const s = sender
@@ -23,83 +22,64 @@ const s = sender
 const phone = s.param(1)
 console.log(`第1个参数: ${phone}`)
 if (phone.length == 11) {
-    console.log(`ok`)
-    getCode(phone)
+  console.log(`ok`)
+  getCode(phone)
 
 } else {
-    console.log(`请输入正确的手机号！`)
-    s.reply(`请输入正确的手机号！`)
+  console.log(`请输入正确的手机号！`)
+  s.reply(`请输入正确的手机号！`)
 }
 
- function getCode(phone) {
+async function getCode(phone) {
   let name = "获取验证码"
   let salt = '17aaf8118ffb270b766c6d6774317a133.8.0';
   let reqNonc = randomInt(100000, 999999);
   let ts = ts13();
   let reqSign = MD5_Encrypt(`signature${reqNonc}${ts}${salt}`);
 
-  return new Promise(function (resolve, reject) {
-    // request 网络请求
-    request({
-      url: `https://gsp.gacmotor.com/gateway/app-api/message/sendSmsByPlatform?mobile=${phone}&code=3&ts=${reqNonc}&sign=${reqSign}&platform=app`,
-      method: "get",
-      allowredirects: false, //不禁止重定向
-    }, async function (error, response, body) {
-
-      // console.log(body)
-      let res = JSON.parse(body)
-      if (res.errorCode == 200) {
-        s.reply('请在60s内输入验证码:')
-        // sender listen 监听用户回复 可以接超时、group和private
-        var newS = await s.listenS(60 * 1000) //返回一个sender对象，超时后返回null
-        if (newS == null) {
-          s.reply("超时, 60秒内未输入验证码。")
-        } else {
-          // s.reply(`你回复了：${newS.getContent()}`)
-          let code = newS.getContent()
-          await getToken(phone, code)
-        }
-      } else {
-        s.reply('请稍后再试', res)
-      }
-      resolve()
-    })
-
+  const {body}  = await request({
+    method:"get",
+    headers: {"Content-Type": "application/json"},
+    url: `https://gsp.gacmotor.com/gateway/app-api/message/sendSmsByPlatform?mobile=${phone}&code=3&ts=${reqNonc}&sign=${reqSign}&platform=app`
   })
-
+  
+  const res = JSON.parse(body)
+  // console.log(res)
+  if (res.errorCode == 200) {
+    s.reply('请在60s内输入验证码:')
+    // sender listen 监听用户回复 可以接超时、group和private
+    var newS = await s.listenS(60 * 1000) //返回一个sender对象，超时后返回null
+    if (newS == null) {
+      s.reply("超时, 60秒内未输入验证码。")
+    } else {
+      // s.reply(`你回复了：${newS.getContent()}`)
+      let code = newS.getContent()
+      await getToken(phone, code)
+    }
+  } else {
+    s.reply('请稍后再试', res)
+  }
 
 }
 
 
+async function getToken(phone, code) {
 
- function getToken(phone, code) {
-
-  return new Promise(function (resolve, reject) {
-
-    request({
-      url: `https://gsp.gacmotor.com/gateway/app-api/login/mobile`,
-      method: "post",
-      // dataType: "json",
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded"
-      },
-      body: "mobile=" + phone + "&smsCode=" + code,
-      allowredirects: false, //不禁止重定向
-    },  (error, response, body) => {
-    //   console.log(body)
-      let res = JSON.parse(body)
-    //   console.log(res)
-      if (res.errorCode == 200) {
-        s.reply(`您的token:\n${res.data.token}`)
-
-      } else {
-        s.reply('请稍后再试', res)
-      }
-      resolve()
-
-    })
-
+  const {body} = await request({
+    method:"post",
+    url: `https://gsp.gacmotor.com/gateway/app-api/login/mobile`,
+    form: "mobile=" + phone + "&smsCode=" + code
   })
+  
+  const res = JSON.parse(body)
+  // console.log(res)
+  if (res.errorCode == 200) {
+    s.reply(`您的token:\n${res.data.token}`)
+
+  } else {
+    s.reply('请稍后再试', res)
+  }
+
 
 }
 

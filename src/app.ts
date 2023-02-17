@@ -9,22 +9,20 @@
 
 // app.listen(7070)
 
-
+ 
 // import Sender from "./sender"
 import { loadPlugins, handleMessage } from "./plugins"
 import Sender from "./sender"
 import tgBot from "../Adapter/Telegram"
 import readline from "readline"
 tgBot()
-
+  
 console.log('>>> 小小启动成功')
 console.log('> 正在初始化......')
 debugging()
 loadPlugins()
 
 console.log('> 初始化成功......')
-
-
 
 
 function debugging() {
@@ -42,7 +40,7 @@ function debugging() {
     // prompt()是最重要的方法，因为它体现了readline的核心作用，
     // 以行为单位读取数据，prompt方法就是在等待用户输入数据
     r1.prompt();
-
+ 
     // 调用接口方法
     // 监听了'line' 事件，因为prompt方法调用一次就只会读取一次数据
     // 所以，在这个方法又调用了一次prompt方法，这样就可以继续读取用户输入
@@ -70,8 +68,5 @@ function debugging() {
         console.log("再见");
         process.exit(0);
     })
-
- 
-
+   
 }
-

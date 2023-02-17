@@ -1,6 +1,7 @@
 
 import Plugin,{newPlugin, addListenMap, removeListenMap} from "./plugins"
 
+
 class NewSender {
     message: any
     constructor(message: any){

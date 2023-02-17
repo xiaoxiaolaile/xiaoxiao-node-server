@@ -13,7 +13,10 @@
  * 启用脚本
  * @disable false
  */
-var newS = await s.listenS(10 * 1000) //返回一个sender对象，超时后返回null
+
+
+s.reply("开始调用接口！")
+var newS = await s.listenS(60 * 1000) //返回一个sender对象，超时后返回null
 if (newS == null) {
   s.reply("超时, 60秒内未输入验证码。")
 } else {

@@ -2,6 +2,7 @@ import fs from "fs"
 import Sender from "./sender"
 import Logger from "./logger"
 import { NodeVM, VMScript } from 'vm2'
+import {requestOptions} from "./http"
 
 
 const vm = new NodeVM({
@@ -123,6 +124,7 @@ function createPlugin(pathName: string) {
     const script = new VMScript(`!(async () => {
         ${str}
         })().catch((e) => console.log(e))`, { filename: pathName })
+    // const script = new VMScript(str, { filename: pathName })
     const reg = "/\\*(.|\\r\\n|\\n)*?\\*/"
     const res = str.match(reg); //没有使用g选项  
     const data = res?.[0]
@@ -160,6 +162,7 @@ function runMessage(sender: Sender, script: any) {
     vm.freeze(sender, 's');
     vm.freeze(sender, 'sender');
     vm.freeze(Sender, 'Sender');
+    vm.freeze(requestOptions, 'request');
     vm.run(script)
     
 }
